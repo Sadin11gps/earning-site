@@ -5,108 +5,120 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌟 Student Best Income 🌟</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #e0f7fa, #f3e5f5);
-    margin: 0;
-    text-align: center;
-    color: #111827;
-  }
-  header {
-    background: #3b82f6;
-    color: white;
-    padding: 15px;
-    font-size: 22px;
-    font-weight: bold;
-  }
-  .verify-banner {
-    background: #f87171;
-    color: white;
-    padding: 15px;
-    margin: 15px;
-    border-radius: 10px;
-    font-size: 18px;
-  }
-  .verify-banner a {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px 20px;
-    background: #10b981;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: bold;
-  }
-  nav {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 20px;
-  }
-  nav a {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    background: #f3f4f6;
-    text-decoration: none;
-    color: #111827;
-    font-weight: bold;
-    border-radius: 12px;
-    transition: 0.3s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-  nav a:hover {
-    background: #3b82f6;
-    color: black;
-    transform: translateY(-3px);
-  }
-  <nav>
-  <a href="index.html" class="icon">🏠</a>
-  <a href="task.html" class="icon">✅</a>
-  <a href="profile.html" class="icon">👤</a>
-  <a href="reffer.html" class="icon">🔗</a>
-  <a href="offer.html" class="icon">🎁</a>
-  <a href="livechat.html" class="icon">💬</a>
-  <a href="history.html" class="icon">📜</a>
-</nav>
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
+  margin: 0;
+  text-align: center;
+}
 
-<style>
-.icon {
-  font-size: 28px;
-  margin: 10px;
-  display: inline-block;
+/* হেডার */
+header {
+  background: #3b82f6;
+  color: white;
+  padding: 15px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* ওয়েলকাম মেসেজ */
+.welcome {
+  background: #ffffff;
+  padding: 15px;
+  margin: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* ভেরিফাই ব্যানার */
+.verify-banner {
+  background: #f87171;
+  color: white;
+  padding: 12px;
+  margin: 15px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.verify-banner a {
+  color: yellow;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+/* নেভিগেশন */
+nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 10px;
+  margin: 10px auto;
+  max-width: 800px;
+}
+
+nav a {
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 12px;
   transition: all 0.3s ease;
-  background: linear-gradient(45deg, #ff6ec4, #7873f5, #4ade80, #facc15);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient 3s infinite alternate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-.icon:hover {
-  transform: scale(1.2);
-  filter: drop-shadow(0 0 6px rgba(0,0,0,0.3));
+/* ঝলমলে গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
+nav a:nth-child(1) { background: linear-gradient(45deg, #ff6a00, #ee0979); } /* Home */
+nav a:nth-child(2) { background: linear-gradient(45deg, #43cea2, #185a9d); } /* Tasks */
+nav a:nth-child(3) { background: linear-gradient(45deg, #36d1dc, #5b86e5); } /* Profile */
+nav a:nth-child(4) { background: linear-gradient(45deg, #f7971e, #ffd200); } /* Reffer */
+nav a:nth-child(5) { background: linear-gradient(45deg, #8e2de2, #4a00e0); } /* Offer */
+nav a:nth-child(6) { background: linear-gradient(45deg, #ff512f, #dd2476); } /* Live Chat */
+nav a:nth-child(7) { background: linear-gradient(45deg, #11998e, #38ef7d); } /* History */
+
+nav a:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+nav a span.icon {
+  font-size: 28px;
+  margin-bottom: 5px;
 }
-</style>
+
+/* ফুটার */
+footer {
+  margin-top: 25px;
+  padding: 10px;
+  font-size: 16px;
+  color: #555;
+}
 </style>
 </head>
 <body>
 
 <header>🌟 Student Best Income 🌟</header>
 
+<!-- ওয়েলকাম মেসেজ -->
+<div class="welcome">
+  🌟 WELCOME TO OUR COMMUNITY 🌟<br>
+  💬 আসসালামু আলাইকুম,<br>
+  🙏 সবাইকে স্বাগতম আমাদের SUSAITY তে!<br>
+  🚀 এখানে সবাই একসাথে ইনকাম করতে, শিখতে এবং শেয়ার করতে পারবেন।<br>
+  💡 নিয়মিত থাকুন, মনোযোগ দিয়ে কাজ করুন, আর সবার জন্য ইনকাম নিশ্চিত করুন 💸
+</div>
+
+<!-- ভেরিফাই ব্যানার -->
 <div class="verify-banner">
-  Your account is not verified.
-  <br>
+  Your account is not verified. 
   <a href="verify.html">→ VERIFY NOW ←</a>
 </div>
 
+<!-- নেভিগেশন -->
 <nav>
   <a href="index.html"><span class="icon">🏠</span>Home</a>
   <a href="task.html"><span class="icon">✅</span>Tasks</a>
@@ -117,15 +129,7 @@
   <a href="history.html"><span class="icon">📜</span>History</a>
 </nav>
 
-<main>
-  <h1>🌟 WELCOME TO OUR COMMUNITY 🌟</h1>
-  <p>💬 আসসালামু আলাইকুম,</p>
-  <p>🙏 সবাইকে স্বাগতম আমাদের SUSAITY তে!</p>
-  <p>🚀 এখানে সবাই একসাথে ইনকাম করতে, শিখতে এবং শেয়ার করতে পারবেন।</p>
-  <p>💡 নিয়মিত থাকুন, মনোযোগ দিয়ে কাজ করুন, আর সবার জন্য ইনকাম নিশ্চিত করুন 💸</p>
-</main>
-
-<!-- Footer with RDS TEAM branding -->
+<!-- ফুটার -->
 <footer>
   𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 🌐 ×•»RDS TEAM«•×
 </footer>
