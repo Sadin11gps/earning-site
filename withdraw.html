@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdraw - Student Best Income</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #3b82f6;
+    }
+    .balance {
+      font-size: 20px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    select, .amount-btn, .confirm-btn {
+      display: block;
+      width: 200px;
+      margin: 10px auto;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .amount-btn {
+      background: #10b981;
+      color: white;
+    }
+    .amount-btn:hover {
+      background: #059669;
+    }
+    .confirm-btn {
+      background: #3b82f6;
+      color: white;
+      font-weight: bold;
+    }
+    .confirm-btn:hover {
+      background: #2563eb;
+    }
+    .charge {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💰 Withdraw</h1>
+  <div class="balance">User Balance: 500 TK</div>
+
+  <label for="method">Withdraw Method:</label>
+  <select id="method">
+    <option value="bkash">Bkash</option>
+    <option value="nagad">Nagad</option>
+  </select>
+
+  <h3>Select Amount:</h3>
+  <div>
+    <button class="amount-btn" onclick="selectAmount(220)">-220 TK <div class="charge">Charge: 10%</div></button>
+    <button class="amount-btn" onclick="selectAmount(330)">-330 TK <div class="charge">Charge: 10%</div></button>
+    <button class="amount-btn" onclick="selectAmount(550)">-550 TK <div class="charge">Charge: 10%</div></button>
+    <button class="amount-btn" onclick="selectAmount(770)">-770 TK <div class="charge">Charge: 10%</div></button>
+    <button class="amount-btn" onclick="selectAmount(1100)">-1100 TK <div class="charge">Charge: 10%</div></button>
+  </div>
+
+  <div id="selected-amount" style="margin:20px; font-size:18px; font-weight:bold;"></div>
+
+  <button class="confirm-btn" onclick="confirmWithdraw()">Confirm Withdraw</button>
+
+  <script>
+    let amount = 0;
+
+    function selectAmount(val) {
+      amount = val;
+      const charge = Math.round(val * 0.1);
+      document.getElementById('selected-amount').innerText = 
+        `Selected: ${val} TK | Charge: ${charge} TK | Total Deduct: ${val + charge} TK`;
+    }
+
+    function confirmWithdraw() {
+      if (amount === 0) {
+        alert('Please select an amount first!');
+        return;
+      }
+      const method = document.getElementById('method').value;
+      alert(`Withdraw Request Sent!\nMethod: ${method}\nAmount: ${amount} TK`);
+      // এখানে AJAX বা Backend Call করে এডমিন/সিস্টেমে নোটিফিকেশন পাঠাতে পারবে
+    }
+  </script>
+
+</body>
+</html>
