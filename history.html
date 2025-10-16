@@ -1,96 +1,85 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>History - Student Best Income</title>
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-firestore-compat.js"></script>
+
 <style>
-body { font-family: Arial, sans-serif; background: #f3f4f6; text-align: center; margin: 0; padding: 20px; }
-header { background: #3b82f6; color: white; padding: 15px; font-size: 22px; font-weight: bold; }
-nav { display: flex; justify-content: center; flex-wrap: wrap; margin: 15px 0; }
-nav a { margin: 5px; text-decoration: none; color: #111827; font-weight: bold; padding: 8px 12px; border-radius: 5px; background: #e5e7eb; }
-nav a:hover { background: #3b82f6; color: white; }
-.history-section { background: white; padding: 15px; margin: 15px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 0 5px rgba(0,0,0,0.1); text-align: left; }
-h2 { color: #3b82f6; }
-p { margin: 5px 0; }
+  body { font-family: Arial; background:#f3f4f6; padding:20px; }
+  h1 { color:#3b82f6; text-align:center; margin-bottom:20px; }
+  .section { background:white; padding:15px; margin:15px 0; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+  .task, .withdraw { margin:8px 0; padding:5px; border-bottom:1px solid #ddd; }
 </style>
 </head>
 <body>
 
-<header>📜 History</header>
+<h1>📊 Daily Task & Withdraw History 📊</h1>
 
-<nav>
-  <a href="index.html">🏠 Home</a>
-  <a href="task.html">✅ Tasks</a>
-  <a href="profile.html">👤 Profile</a>
-  <a href="reffer.html">🔗 Reffer</a>
-  <a href="offer.html">🎁 Offer</a>
-  <a href="livechat.html">💬 Live Chat</a>
-</nav>
+<div class="section">
+  <h2>Daily Task History</h2>
+  <div id="taskHistory">Loading...</div>
+</div>
 
-<main>
-  <div class="history-section" id="taskHistory">
-    <h2>📊 Daily Task History 📊</h2>
-    <hr>
-  </div>
-
-  <div class="history-section" id="withdrawHistory">
-    <h2>💰 Withdraw History 💰</h2>
-    <hr>
-  </div>
-</main>
+<div class="section">
+  <h2>💰 Withdraw History</h2>
+  <div id="withdrawHistory">Loading...</div>
+</div>
 
 <script>
-// Mock data for demonstration
-let taskHistoryData = [
-  { task: "Task 1", tk: 20, date: "2025-10-16", status: "Completed" },
-  { task: "Task 2", tk: 15, date: "2025-10-16", status: "Completed" },
-  { task: "Task 3", tk: 10, date: "2025-10-16", status: "Pending" }
-];
+  // Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",
+    authDomain: "studentbestincome.firebaseapp.com",
+    projectId: "studentbestincome",
+    storageBucket: "studentbestincome.firebasestorage.app",
+    messagingSenderId: "261636758539",
+    appId: "1:261636758539:web:faea7afabe319a53117b0e",
+    measurementId: "G-6L77EJ7MJF"
+  };
 
-let withdrawHistoryData = [
-  { method: "Bkash", number: "017XXXXXXXX", amount: 100, status: "Approved", date: "2025-10-16" },
-  { method: "Nagad", number: "017XXXXXXXX", amount: 50, status: "Pending", date: "2025-10-16" }
-];
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-// Function to render task history
-function renderTaskHistory() {
-  const taskDiv = document.getElementById("taskHistory");
-  taskDiv.innerHTML = "<h2>📊 Daily Task History 📊</h2><hr>";
-  let today = new Date().toISOString().split("T")[0];
+  auth.onAuthStateChanged(user => {
+    if(!user) {
+      window.location.href = "login.html";
+      return;
+    }
+    const uid = user.uid;
 
-  // Clear tasks older than 3 days
-  taskHistoryData = taskHistoryData.filter(task => {
-    let taskDate = new Date(task.date);
-    let diffDays = Math.floor((new Date(today) - taskDate) / (1000*60*60*24));
-    return diffDays <= 3;
+    // Load Task History
+    db.collection('task_history')
+      .where('userId','==',uid)
+      .orderBy('timestamp','desc')
+      .onSnapshot(snapshot=>{
+        const taskDiv = document.getElementById('taskHistory');
+        taskDiv.innerHTML = '';
+        snapshot.forEach(doc=>{
+          const data = doc.data();
+          taskDiv.innerHTML += `<div class="task">1️⃣ ${data.taskName}: ${data.tk} TK | ${data.date} | ${data.status}</div>`;
+        });
+      });
+
+    // Load Withdraw History
+    db.collection('withdraws')
+      .where('userId','==',uid)
+      .orderBy('timestamp','desc')
+      .onSnapshot(snapshot=>{
+        const withdrawDiv = document.getElementById('withdrawHistory');
+        withdrawDiv.innerHTML = '';
+        snapshot.forEach(doc=>{
+          const data = doc.data();
+          withdrawDiv.innerHTML += `<div class="withdraw">🔹 Withdraw: ${data.method || '-'} | ${data.number || '-'} | ${data.amount} TK | ${data.status}</div>`;
+        });
+      });
   });
 
-  taskHistoryData.forEach(task => {
-    taskDiv.innerHTML += `<p>${task.task}: ${task.tk} TK | ${task.date} | ${task.status}</p>`;
-  });
-}
-
-// Function to render withdraw history
-function renderWithdrawHistory() {
-  const withdrawDiv = document.getElementById("withdrawHistory");
-  withdrawDiv.innerHTML = "<h2>💰 Withdraw History 💰</h2><hr>";
-  withdrawHistoryData.forEach(w => {
-    withdrawDiv.innerHTML += `<p>${w.method} | ${w.number} | ${w.amount} TK | ${w.status} | ${w.date}</p>`;
-  });
-}
-
-// Initial render
-renderTaskHistory();
-renderWithdrawHistory();
-
-// Simulate real-time update every 10 seconds (demo)
-setInterval(() => {
-  // Example: add a new task randomly
-  let randomTask = `Task ${Math.floor(Math.random()*10)+1}`;
-  taskHistoryData.push({ task: randomTask, tk: 10, date: new Date().toISOString().split("T")[0], status: "Pending" });
-  renderTaskHistory();
-}, 10000);
 </script>
 
 </body>

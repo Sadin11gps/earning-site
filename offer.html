@@ -1,102 +1,105 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Offers - Student Best Income</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      margin: 0;
-      text-align: center;
-    }
-    header {
-      background: #3b82f6;
-      color: white;
-      padding: 15px;
-      font-size: 22px;
-      font-weight: bold;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background: #e5e7eb;
-      padding: 10px 0;
-    }
-    nav a {
-      text-decoration: none;
-      color: #111827;
-      margin: 0 10px;
-      font-size: 18px;
-    }
-    nav a:hover {
-      color: #3b82f6;
-    }
-    h1 {
-      color: #3b82f6;
-      margin-top: 20px;
-    }
-    table {
-      margin: 20px auto;
-      border-collapse: collapse;
-      width: 90%;
-      max-width: 600px;
-      background: #fef3c7;
-      font-size: 16px;
-    }
-    th, td {
-      border: 1px solid #d1d5db;
-      padding: 10px;
-    }
-    th {
-      background: #3b82f6;
-      color: white;
-    }
-    p.note {
-      margin-top: 10px;
-      font-style: italic;
-      color: #ef4444;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offers - Student Best Income</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+  h1 { text-align: center; color: #333; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  th, td { padding: 12px; text-align: center; border-bottom: 1px solid #ccc; }
+  button { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; }
+  .locked { background-color: #ccc; color: #666; cursor: not-allowed; }
+  .active { background-color: #4CAF50; color: #fff; }
+</style>
 </head>
 <body>
 
-<header>🎁 Offers & Referral Bonus</header>
+<h1>💎 Referral & Bonus Offers 💎</h1>
 
-<nav>
-  <a href="index.html">🏠 Home</a>
-  <a href="task.html">✅ Tasks</a>
-  <a href="profile.html">👤 Profile</a>
-  <a href="reffer.html">🔗 Reffer</a>
-  <a href="offer.html">🎁 Offer</a>
-  <a href="livechat.html">💬 Live Chat</a>
-  <a href="history.html">📜 History</a>
-</nav>
+<table>
+  <thead>
+    <tr>
+      <th>Refers</th>
+      <th>Direct Refers</th>
+      <th>Bonus (Tk)</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="offerTable">
+    <!-- JS will populate rows here -->
+  </tbody>
+</table>
 
-<main>
-  <h1>Referral & Bonus Structure 💎</h1>
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",
+    authDomain: "studentbestincome.firebaseapp.com",
+    projectId: "studentbestincome",
+    storageBucket: "studentbestincome.firebasestorage.app",
+    messagingSenderId: "261636758539",
+    appId: "1:261636758539:web:faea7afabe319a53117b0e",
+    measurementId: "G-6L77EJ7MJF"
+  };
 
-  <table>
-    <thead>
-      <tr>
-        <th>Reffer</th>
-        <th>Direct Reffer</th>
-        <th>Bonus (Tk)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>20</td><td>10</td><td>300</td></tr>
-      <tr><td>50</td><td>25</td><td>600</td></tr>
-      <tr><td>100</td><td>50</td><td>1200</td></tr>
-      <tr><td>200</td><td>100</td><td>2400</td></tr>
-      <tr><td>500</td><td>250</td><td>5000</td></tr>
-      <tr><td>1000</td><td>500</td><td>9000</td></tr>
-    </tbody>
-  </table>
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-  <p class="note">💡 Note: যত বেশি রেফার করবে, তত বেশি বোনাস পাবেন! 🚀</p>
-</main>
+  // Example user ID (replace with auth user id)
+  const userId = "USER123";
+
+  // Offer data
+  const offers = [
+    {ref: 20, direct: 10, bonus: 300},
+    {ref: 50, direct: 25, bonus: 600},
+    {ref: 100, direct: 50, bonus: 1200},
+    {ref: 200, direct: 100, bonus: 2400},
+    {ref: 500, direct: 250, bonus: 5000},
+    {ref: 1000, direct: 500, bonus: 9000},
+  ];
+
+  const offerTable = document.getElementById("offerTable");
+
+  // Load claimed status from Firebase
+  db.collection("users").doc(userId).get().then(doc => {
+    const claimedData = doc.exists ? doc.data().claimed || {} : {};
+
+    offers.forEach((offer, index) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${offer.ref}</td>
+        <td>${offer.direct}</td>
+        <td>${offer.bonus} Tk</td>
+        <td>
+          <button id="claimBtn${index}" class="${claimedData[index] ? 'locked' : 'active'}" ${claimedData[index] ? 'disabled' : ''}>
+            ${claimedData[index] ? 'Claimed' : 'Claim'}
+          </button>
+        </td>
+      `;
+      offerTable.appendChild(tr);
+
+      if(!claimedData[index]) {
+        document.getElementById(`claimBtn${index}`).addEventListener("click", () => {
+          // Update user's bonus in Firestore
+          db.collection("users").doc(userId).set({
+            claimed: {...claimedData, [index]: true},
+            balance: firebase.firestore.FieldValue.increment(offer.bonus)
+          }, {merge:true}).then(() => {
+            document.getElementById(`claimBtn${index}`).innerText = "Claimed";
+            document.getElementById(`claimBtn${index}`).classList.add("locked");
+            document.getElementById(`claimBtn${index}`).disabled = true;
+            alert(`🎉 You received ${offer.bonus} Tk bonus!`);
+          });
+        });
+      }
+    });
+  });
+</script>
 
 </body>
 </html>

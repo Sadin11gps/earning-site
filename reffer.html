@@ -3,54 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Referral - Student Best Income</title>
+  <title>Referral System | Student Best Income</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f3f4f6; margin: 0; padding: 20px; text-align: center; }
-    header { background: #3b82f6; color: white; padding: 15px; font-size: 22px; font-weight: bold; }
-    .referral-box, .stats-box { background: white; border-radius: 10px; padding: 20px; margin: 20px auto; max-width: 500px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: left; }
-    h2 { color: #3b82f6; }
-    p { font-size: 16px; margin: 8px 0; }
-    .btn { display: inline-block; background: #10b981; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-top: 10px; }
-    .btn:hover { background: #059669; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: #3b82f6;
+      color: white;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .referral-box {
+      background: #fff;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .referral-box p, .referral-box h3 {
+      margin: 10px 0;
+    }
+    #ref-link {
+      color: blue;
+      font-weight: bold;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
+  <header>🌟 Student Best Income 🌟</header>
 
-<header>🔗 Referral System</header>
+  <div class="referral-box">
+    <h3>Share your referral link:</h3>
+    <p id="ref-link">Loading...</p>
 
-<div class="referral-box">
-  <h2>আপনার Referral Link</h2>
-  <p>প্রত্যেকটি রেফারে একটিভ হলে আপনি পাবেন 15 TK বোনাস।</p>
-  <p><strong>Link:</strong> <input type="text" value="https://sadin11gps.github.io/earning-site/?ref=USERID" id="refLink" readonly style="width:100%; padding:5px;"></p>
-  <a href="#" class="btn" onclick="copyLink()">Copy Link</a>
-</div>
+    <h3>Referral List 💎</h3>
+    <p>Total Referrals: <span id="ref-total">0</span></p>
+    <p>Active Users: <span id="ref-active">0</span></p>
+    <p>Inactive Users: <span id="ref-inactive">0</span></p>
+  </div>
 
-<div class="stats-box">
-  <h2>📢 Referral List 💎</h2>
-  <p>💠 <strong>Total Referrals:</strong> <span id="totalReferrals">0</span></p>
-  <p>💠 <strong>Active Users:</strong> <span id="activeUsers">0</span></p>
-  <p>💠 <strong>Inactive Users:</strong> <span id="inactiveUsers">0</span></p>
-  <p>💡 Note: যত বেশি active user থাকবে, তত বেশি বোনাস পাবেন! 🚀</p>
-</div>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-<script>
-// Example JS values (পরবর্তীতে সার্ভার/ডাটাবেস থেকে আসবে)
-const totalRef = 50;   // মোট রেফার সংখ্যা
-const activeRef = 35;  // একটিভ ইউজার সংখ্যা
-const inactiveRef = totalRef - activeRef;
+    const firebaseConfig = {
+      apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",
+      authDomain: "studentbestincome.firebaseapp.com",
+      projectId: "studentbestincome",
+      storageBucket: "studentbestincome.firebasestorage.app",
+      messagingSenderId: "261636758539",
+      appId: "1:261636758539:web:faea7afabe319a53117b0e",
+      measurementId: "G-6L77EJ7MJF"
+    };
 
-document.getElementById("totalReferrals").innerText = totalRef;
-document.getElementById("activeUsers").innerText = activeRef;
-document.getElementById("inactiveUsers").innerText = inactiveRef;
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-function copyLink() {
-  const copyText = document.getElementById("refLink");
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  alert("Referral link copied!");
-}
-</script>
+    // TODO: এখানে USER_ID পরিবর্তন করতে হবে লগইন/রেজিস্ট্রেশনের ID দিয়ে
+    const userId = "USER_ID";
 
+    // রেফারাল লিংক
+    const referralLink = `https://sadin11gps.github.io/earning-site/?ref=${userId}`;
+    document.getElementById("ref-link").textContent = referralLink;
+
+    // রেফারাল হিস্টোরি রিয়েল-টাইম
+    const referralRef = ref(db, 'referrals/' + userId);
+    onValue(referralRef, (snapshot) => {
+        const data = snapshot.val();
+        let total = 0, active = 0, inactive = 0;
+        if(data){
+            total = Object.keys(data).length;
+            Object.values(data).forEach(r => {
+                if(r.active) active++;
+                else inactive++;
+            });
+        }
+        document.getElementById("ref-total").textContent = total;
+        document.getElementById("ref-active").textContent = active;
+        document.getElementById("ref-inactive").textContent = inactive;
+    });
+  </script>
 </body>
 </html>

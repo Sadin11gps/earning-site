@@ -1,109 +1,62 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌟 Student Best Income 🌟</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f4f8;
-  margin: 0;
-  text-align: center;
-}
-
-/* হেডার */
-header {
-  background: #3b82f6;
-  color: white;
-  padding: 15px;
-  font-size: 22px;
-  font-weight: bold;
-}
-
-/* ওয়েলকাম মেসেজ */
-.welcome {
-  background: #ffffff;
-  padding: 15px;
-  margin: 15px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* ভেরিফাই ব্যানার */
-.verify-banner {
-  background: #f87171;
-  color: white;
-  padding: 12px;
-  margin: 15px;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.verify-banner a {
-  color: yellow;
-  text-decoration: none;
-  margin-left: 10px;
-}
-
-/* নেভিগেশন */
-nav {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  padding: 10px;
-  margin: 10px auto;
-  max-width: 800px;
-}
-
-nav a {
-  text-decoration: none;
-  font-size: 20px;
-  color: white;
-  padding: 10px 15px;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-/* ঝলমলে গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
-nav a:nth-child(1) { background: linear-gradient(45deg, #ff6a00, #ee0979); } /* Home */
-nav a:nth-child(2) { background: linear-gradient(45deg, #43cea2, #185a9d); } /* Tasks */
-nav a:nth-child(3) { background: linear-gradient(45deg, #36d1dc, #5b86e5); } /* Profile */
-nav a:nth-child(4) { background: linear-gradient(45deg, #f7971e, #ffd200); } /* Reffer */
-nav a:nth-child(5) { background: linear-gradient(45deg, #8e2de2, #4a00e0); } /* Offer */
-nav a:nth-child(6) { background: linear-gradient(45deg, #ff512f, #dd2476); } /* Live Chat */
-nav a:nth-child(7) { background: linear-gradient(45deg, #11998e, #38ef7d); } /* History */
-
-nav a:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
-
-nav a span.icon {
-  font-size: 28px;
-  margin-bottom: 5px;
-}
-
-/* ফুটার */
-footer {
-  margin-top: 25px;
-  padding: 10px;
-  font-size: 16px;
-  color: #555;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌟 Student Best Income 🌟</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      text-align: center;
+    }
+    header {
+      background: #3b82f6;
+      color: white;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    nav {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      padding: 10px;
+    }
+    nav a {
+      text-decoration: none;
+      color: #ffffff;
+      background: #6366f1;
+      padding: 8px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .welcome {
+      margin: 20px;
+      font-size: 16px;
+    }
+    .verify-banner {
+      background: #fbbf24;
+      color: #1f2937;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px;
+      font-weight: bold;
+    }
+    footer {
+      margin-top: 30px;
+      padding: 10px;
+      background: #1f2937;
+      color: white;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
 
 <header>🌟 Student Best Income 🌟</header>
 
-<!-- ওয়েলকাম মেসেজ -->
 <div class="welcome">
   🌟 WELCOME TO OUR COMMUNITY 🌟<br>
   💬 আসসালামু আলাইকুম,<br>
@@ -112,27 +65,49 @@ footer {
   💡 নিয়মিত থাকুন, মনোযোগ দিয়ে কাজ করুন, আর সবার জন্য ইনকাম নিশ্চিত করুন 💸
 </div>
 
-<!-- ভেরিফাই ব্যানার -->
 <div class="verify-banner">
-  Your account is not verified. 
+  Your account is not verified.<br>
   <a href="verify.html">→ VERIFY NOW ←</a>
 </div>
 
-<!-- নেভিগেশন -->
 <nav>
-  <a href="index.html"><span class="icon">🏠</span>Home</a>
-  <a href="task.html"><span class="icon">✅</span>Tasks</a>
-  <a href="profile.html"><span class="icon">👤</span>Profile</a>
-  <a href="reffer.html"><span class="icon">🔗</span>Reffer</a>
-  <a href="offer.html"><span class="icon">🎁</span>Offer</a>
-  <a href="livechat.html"><span class="icon">💬</span>Live Chat</a>
-  <a href="history.html"><span class="icon">📜</span>History</a>
+  <a href="index.html">🏠 Home</a>
+  <a href="task.html">✅ Tasks</a>
+  <a href="profile.html">👤 Profile</a>
+  <a href="reffer.html">🔗 Reffer</a>
+  <a href="offer.html">🎁 Offer</a>
+  <a href="livechat.html">💬 Live Chat</a>
+  <a href="history.html">📜 History</a>
 </nav>
 
-<!-- ফুটার -->
 <footer>
   𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 🌐 ×•»RDS TEAM«•×
 </footer>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",
+    authDomain: "studentbestincome.firebaseapp.com",
+    projectId: "studentbestincome",
+    storageBucket: "studentbestincome.firebasestorage.app",
+    messagingSenderId: "261636758539",
+    appId: "1:261636758539:web:faea7afabe319a53117b0e",
+    measurementId: "G-6L77EJ7MJF"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  
+  // এখানে ভবিষ্যতে ভেরিফাই চেক বা ইউজার ডাটা ফেচ করা যাবে
+</script>
 
 </body>
 </html>

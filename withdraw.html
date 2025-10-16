@@ -3,98 +3,144 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Withdraw - Student Best Income</title>
+  <title>Profile - Student Best Income</title>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-firestore-compat.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f3f4f6;
+      margin: 0;
+      padding: 0;
       text-align: center;
-      padding: 20px;
     }
-    h1 {
-      color: #3b82f6;
-    }
-    .balance {
-      font-size: 20px;
-      margin-bottom: 20px;
-      font-weight: bold;
-    }
-    select, .amount-btn, .confirm-btn {
-      display: block;
-      width: 200px;
-      margin: 10px auto;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-    .amount-btn {
-      background: #10b981;
-      color: white;
-    }
-    .amount-btn:hover {
-      background: #059669;
-    }
-    .confirm-btn {
+    header {
       background: #3b82f6;
       color: white;
+      padding: 15px;
+      font-size: 22px;
       font-weight: bold;
     }
-    .confirm-btn:hover {
-      background: #2563eb;
+    .profile {
+      margin: 20px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .charge {
-      font-size: 14px;
-      color: #555;
+    .profile img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
       margin-bottom: 10px;
+    }
+    .profile h2 {
+      margin: 10px 0;
+    }
+    .profile p {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+    .verify-banner {
+      background: #fbbf24;
+      color: #000;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 15px 0;
+      font-weight: bold;
+      display: none; /* Default hidden */
+    }
+    .btn {
+      display: inline-block;
+      margin: 10px 5px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      background: #3b82f6;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .btn.withdraw {
+      background: #10b981;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <h1>💰 Withdraw</h1>
-  <div class="balance">User Balance: 500 TK</div>
+<header>🌟 Student Best Income 🌟</header>
 
-  <label for="method">Withdraw Method:</label>
-  <select id="method">
-    <option value="bkash">Bkash</option>
-    <option value="nagad">Nagad</option>
-  </select>
-
-  <h3>Select Amount:</h3>
-  <div>
-    <button class="amount-btn" onclick="selectAmount(220)">-220 TK <div class="charge">Charge: 10%</div></button>
-    <button class="amount-btn" onclick="selectAmount(330)">-330 TK <div class="charge">Charge: 10%</div></button>
-    <button class="amount-btn" onclick="selectAmount(550)">-550 TK <div class="charge">Charge: 10%</div></button>
-    <button class="amount-btn" onclick="selectAmount(770)">-770 TK <div class="charge">Charge: 10%</div></button>
-    <button class="amount-btn" onclick="selectAmount(1100)">-1100 TK <div class="charge">Charge: 10%</div></button>
+<div class="profile">
+  <img id="profile-pic" src="profile-pic-placeholder.png" alt="Profile Picture">
+  <h2 id="username">Loading...</h2>
+  <p><strong>Balance:</strong> <span id="balance">0</span> TK</p>
+  
+  <div id="verify-banner" class="verify-banner">
+    Your account is not verified. → <a href="verify.html" class="btn">VERIFY NOW</a>
   </div>
 
-  <div id="selected-amount" style="margin:20px; font-size:18px; font-weight:bold;"></div>
+  <a href="withdraw.html" id="withdraw-btn" class="btn withdraw">Withdraw</a>
+</div>
 
-  <button class="confirm-btn" onclick="confirmWithdraw()">Confirm Withdraw</button>
+<nav>
+  <a href="index.html" class="btn">🏠 Home</a>
+  <a href="task.html" class="btn">✅ Tasks</a>
+  <a href="reffer.html" class="btn">🔗 Reffer</a>
+  <a href="offer.html" class="btn">🎁 Offer</a>
+  <a href="livechat.html" class="btn">💬 Live Chat</a>
+  <a href="history.html" class="btn">📜 History</a>
+</nav>
 
-  <script>
-    let amount = 0;
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",
+    authDomain: "studentbestincome.firebaseapp.com",
+    projectId: "studentbestincome",
+    storageBucket: "studentbestincome.firebasestorage.app",
+    messagingSenderId: "261636758539",
+    appId: "1:261636758539:web:faea7afabe319a53117b0e",
+    measurementId: "G-6L77EJ7MJF"
+  };
 
-    function selectAmount(val) {
-      amount = val;
-      const charge = Math.round(val * 0.1);
-      document.getElementById('selected-amount').innerText = 
-        `Selected: ${val} TK | Charge: ${charge} TK | Total Deduct: ${val + charge} TK`;
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // Check auth state
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      const uid = user.uid;
+      const userRef = db.collection('users').doc(uid);
+
+      userRef.get().then(doc => {
+        if(doc.exists){
+          const data = doc.data();
+          document.getElementById('username').textContent = data.name || "User";
+          document.getElementById('balance').textContent = data.balance || 0;
+          if(!data.verified){
+            document.getElementById('verify-banner').style.display = 'block';
+            document.getElementById('withdraw-btn').style.pointerEvents = 'none';
+            document.getElementById('withdraw-btn').style.opacity = 0.5;
+          }
+        }
+      });
+    } else {
+      window.location.href = "login.html"; // Redirect if not logged in
     }
-
-    function confirmWithdraw() {
-      if (amount === 0) {
-        alert('Please select an amount first!');
-        return;
-      }
-      const method = document.getElementById('method').value;
-      alert(`Withdraw Request Sent!\nMethod: ${method}\nAmount: ${amount} TK`);
-      // এখানে AJAX বা Backend Call করে এডমিন/সিস্টেমে নোটিফিকেশন পাঠাতে পারবে
-    }
-  </script>
+  });
+</script>
 
 </body>
 </html>
