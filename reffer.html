@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refer & Earn - Student Best Income</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f3f4f6; text-align: center; padding: 20px; }
+  h1 { color: #3b82f6; }
+  input { width: 80%; padding: 10px; font-size: 16px; margin: 20px 0; }
+  button { padding: 10px 20px; font-size: 16px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+  button:hover { background: #059669; }
+</style>
+</head>
+<body>
+
+<h1>🔗 Refer & Earn</h1>
+<p>আপনার রেফার লিংক কপি করে বন্ধুদের শেয়ার করুন।</p>
+
+<input type="text" value="https://studentbestincome.github.io/earning-site/?ref=RDSRatul" id="refLink" readonly>
+
+<br>
+<button onclick="copyLink()">Copy Link</button>
+<button onclick="openLink()">Open Link</button>
+
+<script>
+function copyLink() {
+  const copyText = document.getElementById("refLink");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  alert("Link copied: " + copyText.value);
+}
+
+function openLink() {
+  const openText = document.getElementById("refLink").value;
+  window.open(openText, "_blank");
+}
+</script>
+
+</body>
+</html>

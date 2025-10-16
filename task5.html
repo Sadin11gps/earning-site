@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 5 - Student Best Income</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f0f4f8; padding:20px; text-align:center; }
+h1 { color:#3b82f6; }
+.task-link { display:block; background:#10b981; color:white; padding:15px; margin:10px auto; width:80%; max-width:400px; text-decoration:none; border-radius:8px; font-size:18px; }
+.task-link:hover { background:#059669; }
+.screenshot { margin:15px 0; border:2px dashed #3b82f6; padding:20px; }
+input { padding:10px; width:80%; max-width:400px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+button { padding:12px 25px; background:#3b82f6; color:white; border:none; border-radius:5px; font-size:16px; cursor:pointer; }
+button:hover { background:#2563eb; }
+</style>
+</head>
+<body>
+
+<h1>➡️ Task 5: রেজিস্ট্রেশন জব</h1>
+
+<!-- Task Link -->
+<a href="https://otieu.com/4/10049314" class="task-link" target="_blank">Open Task Link</a>
+
+<!-- Copy Link Button -->
+<button onclick="copyLink()">Copy Link</button>
+
+<!-- Screenshots -->
+<div class="screenshot">রেজিস্ট্রেশনের আগে<br>[Upload Screenshot]</div>
+<div class="screenshot">রেজিস্ট্রেশনের পরে<br>[Upload Screenshot]</div>
+
+<!-- Input for registration info -->
+<input type="text" placeholder="আপনার নাম্বার বা ইমেইল লিখুন" id="reginfo"><br>
+
+<!-- Confirm button -->
+<button onclick="confirmTask()">Confirm</button>
+
+<script>
+function copyLink() {
+  navigator.clipboard.writeText("https://otieu.com/4/10049314").then(() => { alert("Link copied!"); });
+}
+
+function confirmTask() {
+  let info = document.getElementById("reginfo").value;
+  if(info==""){ alert("অনুগ্রহ করে নাম্বার বা ইমেইল দিন"); return; }
+  alert("Task 5 confirmed! Info sent to admin: " + info);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>History - Student Best Income</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f3f4f6; text-align: center; margin: 0; padding: 20px; }
+header { background: #3b82f6; color: white; padding: 15px; font-size: 22px; font-weight: bold; }
+nav { display: flex; justify-content: center; flex-wrap: wrap; margin: 15px 0; }
+nav a { margin: 5px; text-decoration: none; color: #111827; font-weight: bold; padding: 8px 12px; border-radius: 5px; background: #e5e7eb; }
+nav a:hover { background: #3b82f6; color: white; }
+.history-section { background: white; padding: 15px; margin: 15px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 0 5px rgba(0,0,0,0.1); text-align: left; }
+h2 { color: #3b82f6; }
+p { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<header>📜 History</header>
+
+<nav>
+  <a href="index.html">🏠 Home</a>
+  <a href="task.html">✅ Tasks</a>
+  <a href="profile.html">👤 Profile</a>
+  <a href="reffer.html">🔗 Reffer</a>
+  <a href="offer.html">🎁 Offer</a>
+  <a href="livechat.html">💬 Live Chat</a>
+</nav>
+
+<main>
+  <div class="history-section" id="taskHistory">
+    <h2>📊 Daily Task History 📊</h2>
+    <hr>
+  </div>
+
+  <div class="history-section" id="withdrawHistory">
+    <h2>💰 Withdraw History 💰</h2>
+    <hr>
+  </div>
+</main>
+
+<script>
+// Mock data for demonstration
+let taskHistoryData = [
+  { task: "Task 1", tk: 20, date: "2025-10-16", status: "Completed" },
+  { task: "Task 2", tk: 15, date: "2025-10-16", status: "Completed" },
+  { task: "Task 3", tk: 10, date: "2025-10-16", status: "Pending" }
+];
+
+let withdrawHistoryData = [
+  { method: "Bkash", number: "017XXXXXXXX", amount: 100, status: "Approved", date: "2025-10-16" },
+  { method: "Nagad", number: "017XXXXXXXX", amount: 50, status: "Pending", date: "2025-10-16" }
+];
+
+// Function to render task history
+function renderTaskHistory() {
+  const taskDiv = document.getElementById("taskHistory");
+  taskDiv.innerHTML = "<h2>📊 Daily Task History 📊</h2><hr>";
+  let today = new Date().toISOString().split("T")[0];
+
+  // Clear tasks older than 3 days
+  taskHistoryData = taskHistoryData.filter(task => {
+    let taskDate = new Date(task.date);
+    let diffDays = Math.floor((new Date(today) - taskDate) / (1000*60*60*24));
+    return diffDays <= 3;
+  });
+
+  taskHistoryData.forEach(task => {
+    taskDiv.innerHTML += `<p>${task.task}: ${task.tk} TK | ${task.date} | ${task.status}</p>`;
+  });
+}
+
+// Function to render withdraw history
+function renderWithdrawHistory() {
+  const withdrawDiv = document.getElementById("withdrawHistory");
+  withdrawDiv.innerHTML = "<h2>💰 Withdraw History 💰</h2><hr>";
+  withdrawHistoryData.forEach(w => {
+    withdrawDiv.innerHTML += `<p>${w.method} | ${w.number} | ${w.amount} TK | ${w.status} | ${w.date}</p>`;
+  });
+}
+
+// Initial render
+renderTaskHistory();
+renderWithdrawHistory();
+
+// Simulate real-time update every 10 seconds (demo)
+setInterval(() => {
+  // Example: add a new task randomly
+  let randomTask = `Task ${Math.floor(Math.random()*10)+1}`;
+  taskHistoryData.push({ task: randomTask, tk: 10, date: new Date().toISOString().split("T")[0], status: "Pending" });
+  renderTaskHistory();
+}, 10000);
+</script>
+
+</body>
+</html>
