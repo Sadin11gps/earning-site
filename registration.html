@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registration - Student Best Income</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f3f4f6; text-align: center; padding: 20px; }
+  h1 { color: #3b82f6; }
+  form { background: #fff; padding: 20px; border-radius: 8px; display: inline-block; text-align: left; max-width: 420px; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  label { display:block; margin-top:10px; font-weight:600; }
+  .field { position: relative; }
+  input[type="text"], input[type="email"], input[type="password"] {
+    width:100%; padding:10px 40px 10px 10px; margin-top:6px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;
+  }
+  .eye-btn {
+    position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; border:none; cursor:pointer;
+    font-size:18px; padding:4px; color:#666;
+  }
+  .eye-btn:focus { outline:none; }
+  .row { display:flex; gap:10px; }
+  .row .col { flex:1; }
+  button.submit {
+    width:100%; margin-top:15px; padding:10px; background:#3b82f6; color:#fff; border:none; border-radius:5px; font-size:16px; cursor:pointer;
+  }
+  button.submit:hover { background:#2563eb; }
+  .note { font-size:14px; color:#555; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<h1>📝 Registration Form</h1>
+
+<form id="regForm" action="verify.html" method="POST">
+  <div class="row">
+    <div class="col">
+      <label>First Name</label>
+      <input type="text" name="first_name" required>
+    </div>
+    <div class="col">
+      <label>Last Name</label>
+      <input type="text" name="last_name" required>
+    </div>
+  </div>
+
+  <label>Email Address</label>
+  <input type="email" name="email" required>
+
+  <label>Number</label>
+  <input type="text" name="number" required>
+
+  <label>Password</label>
+  <div class="field">
+    <input type="password" id="reg-password" name="password" required>
+    <button type="button" class="eye-btn" aria-label="Show password" onclick="togglePassword('reg-password', this)">👁️</button>
+  </div>
+
+  <label>Confirm Password</label>
+  <div class="field">
+    <input type="password" id="reg-confirm-password" name="confirm_password" required>
+    <button type="button" class="eye-btn" aria-label="Show confirm password" onclick="togglePassword('reg-confirm-password', this)">👁️</button>
+  </div>
+
+  <button type="submit" class="submit">✅ Register</button>
+  <p class="note">রেজিস্ট্রেশন করার পর ভেরিফাই করতে হবে — ভেরিফাই না করলে কোনো টাস্ক করা যাবে না।</p>
+</form>
+
+<script>
+/** togglePassword(fieldId, btn)
+ *  fieldId = input element id
+ *  btn = the button element clicked (so we can change icon/aria-label)
+ */
+function togglePassword(fieldId, btn) {
+  const input = document.getElementById(fieldId);
+  if (!input) return;
+  if (input.type === "password") {
+    input.type = "text";
+    btn.textContent = "🙈";               // eye-off icon (text emoji)
+    btn.setAttribute("aria-label", "Hide password");
+  } else {
+    input.type = "password";
+    btn.textContent = "👁️";              // eye icon
+    btn.setAttribute("aria-label", "Show password");
+  }
+}
+</script>
+
+</body>
+</html>

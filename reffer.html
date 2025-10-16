@@ -1,40 +1,54 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Refer & Earn - Student Best Income</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #f3f4f6; text-align: center; padding: 20px; }
-  h1 { color: #3b82f6; }
-  input { width: 80%; padding: 10px; font-size: 16px; margin: 20px 0; }
-  button { padding: 10px 20px; font-size: 16px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
-  button:hover { background: #059669; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referral - Student Best Income</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f3f4f6; margin: 0; padding: 20px; text-align: center; }
+    header { background: #3b82f6; color: white; padding: 15px; font-size: 22px; font-weight: bold; }
+    .referral-box, .stats-box { background: white; border-radius: 10px; padding: 20px; margin: 20px auto; max-width: 500px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: left; }
+    h2 { color: #3b82f6; }
+    p { font-size: 16px; margin: 8px 0; }
+    .btn { display: inline-block; background: #10b981; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-top: 10px; }
+    .btn:hover { background: #059669; }
+  </style>
 </head>
 <body>
 
-<h1>🔗 Refer & Earn</h1>
-<p>আপনার রেফার লিংক কপি করে বন্ধুদের শেয়ার করুন।</p>
+<header>🔗 Referral System</header>
 
-<input type="text" value="https://studentbestincome.github.io/earning-site/?ref=RDSRatul" id="refLink" readonly>
+<div class="referral-box">
+  <h2>আপনার Referral Link</h2>
+  <p>প্রত্যেকটি রেফারে একটিভ হলে আপনি পাবেন 15 TK বোনাস।</p>
+  <p><strong>Link:</strong> <input type="text" value="https://sadin11gps.github.io/earning-site/?ref=USERID" id="refLink" readonly style="width:100%; padding:5px;"></p>
+  <a href="#" class="btn" onclick="copyLink()">Copy Link</a>
+</div>
 
-<br>
-<button onclick="copyLink()">Copy Link</button>
-<button onclick="openLink()">Open Link</button>
+<div class="stats-box">
+  <h2>📢 Referral List 💎</h2>
+  <p>💠 <strong>Total Referrals:</strong> <span id="totalReferrals">0</span></p>
+  <p>💠 <strong>Active Users:</strong> <span id="activeUsers">0</span></p>
+  <p>💠 <strong>Inactive Users:</strong> <span id="inactiveUsers">0</span></p>
+  <p>💡 Note: যত বেশি active user থাকবে, তত বেশি বোনাস পাবেন! 🚀</p>
+</div>
 
 <script>
+// Example JS values (পরবর্তীতে সার্ভার/ডাটাবেস থেকে আসবে)
+const totalRef = 50;   // মোট রেফার সংখ্যা
+const activeRef = 35;  // একটিভ ইউজার সংখ্যা
+const inactiveRef = totalRef - activeRef;
+
+document.getElementById("totalReferrals").innerText = totalRef;
+document.getElementById("activeUsers").innerText = activeRef;
+document.getElementById("inactiveUsers").innerText = inactiveRef;
+
 function copyLink() {
   const copyText = document.getElementById("refLink");
   copyText.select();
   copyText.setSelectionRange(0, 99999);
   document.execCommand("copy");
-  alert("Link copied: " + copyText.value);
-}
-
-function openLink() {
-  const openText = document.getElementById("refLink").value;
-  window.open(openText, "_blank");
+  alert("Referral link copied!");
 }
 </script>
 

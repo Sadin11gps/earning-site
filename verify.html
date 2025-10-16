@@ -1,60 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Account Verify - Student Best Income</title>
-<style>
-body { font-family: Arial, sans-serif; padding: 20px; background: #f3f4f6; }
-h1 { color: #3b82f6; text-align: center; }
-p.pay { text-align:center; font-size:18px; font-weight:bold; color:#10b981; margin-bottom:20px; }
-form { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-label { display: block; margin: 10px 0 5px; }
-input, select, button { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; }
-button { background: #10b981; color: white; border: none; cursor: pointer; }
-button:hover { background: #059669; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Verification - Student Best Income</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f3f4f6; margin: 0; padding: 20px; text-align: center; }
+    header { background: #3b82f6; color: white; padding: 15px; font-size: 22px; font-weight: bold; }
+    .verify-box { background: white; border-radius: 10px; padding: 20px; margin: 20px auto; max-width: 500px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: left; }
+    h2 { color: #3b82f6; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, select { width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }
+    .btn { display: inline-block; background: #10b981; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-top: 15px; cursor: pointer; }
+    .btn:hover { background: #059669; }
+    p { margin: 10px 0; font-size: 16px; }
+  </style>
 </head>
 <body>
 
-<h1>Account Verify</h1>
-<p class="pay">PAY 20 TK</p>
+<header>🛡️ Account Verification</header>
 
-<form id="verifyForm">
-  <label>Send Money to this Number (Bkash/Nagad):</label>
-  <input type="text" value="01338553254" readonly>
+<div class="verify-box">
+  <h2>ভেরিফাই করুন আপনার একাউন্ট</h2>
+  <p>এই নাম্বারে ২০ টাকা পাঠানোর পর আপনার ট্রানজেকশন আইডি লিখুন।</p>
+  <p><strong>Method:</strong> Bkash / Nagad</p>
+  <p><strong>Number:</strong> 01338553254</p>
 
-  <label>Choose Method:</label>
+  <label for="method">Payment Method</label>
   <select id="method">
     <option value="bkash">Bkash</option>
     <option value="nagad">Nagad</option>
   </select>
 
-  <label>Transaction ID:</label>
-  <input type="text" id="trxId" placeholder="Enter your transaction ID" required>
+  <label for="txn">Transaction ID</label>
+  <input type="text" id="txn" placeholder="আপনার ট্রানজেকশন আইডি লিখুন">
 
-  <label>Your Registered Number/Email:</label>
-  <input type="text" id="userInfo" placeholder="Enter number or email" required>
-
-  <button type="button" onclick="submitVerify()">Confirm</button>
-</form>
+  <button class="btn" onclick="confirmVerification()">Confirm</button>
+</div>
 
 <script>
-function submitVerify() {
-    const method = document.getElementById('method').value;
-    const trxId = document.getElementById('trxId').value.trim();
-    const userInfo = document.getElementById('userInfo').value.trim();
-
-    if(trxId === "" || userInfo === "") {
-        alert("Please fill all fields!");
-        return;
-    }
-
-    // এখানে তুমি AJAX বা ফায়ারবেস/সার্ভারের সাথে সংযোগ করতে পারবে
-    alert(`Verification Submitted!\nMethod: ${method}\nTransaction ID: ${trxId}\nUser Info: ${userInfo}`);
-
-    // ফর্ম রিসেট
-    document.getElementById('verifyForm').reset();
+function confirmVerification() {
+  const method = document.getElementById('method').value;
+  const txn = document.getElementById('txn').value.trim();
+  if(txn === '') {
+    alert('অনুগ্রহ করে ট্রানজেকশন আইডি লিখুন।');
+    return;
+  }
+  alert(`ধন্যবাদ! আপনার একাউন্ট ভেরিফিকেশন অনুরোধ পাঠানো হয়েছে।\nMethod: ${method}\nTransaction ID: ${txn}`);
+  // এখানে AJAX বা server call করে admin নোটিফিকেশন পাঠানো যাবে
 }
 </script>
 
