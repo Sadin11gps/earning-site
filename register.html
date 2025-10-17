@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - Student Best Income</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f0f4f8; text-align:center; margin:0; }
+header { background:#3b82f6; color:white; padding:15px; font-size:24px; font-weight:bold; }
+form { background:#e0f2fe; padding:20px; margin:20px auto; border-radius:10px; width:90%; max-width:400px; }
+input { width:90%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:16px; }
+button { padding:10px 20px; border:none; border-radius:5px; background:#10b981; color:white; font-size:16px; font-weight:bold; cursor:pointer; transition:0.3s; }
+button:hover { background:#059669; }
+p { margin-top:15px; }
+.error { color:red; font-weight:bold; }
+.success { color:green; font-weight:bold; }
+</style>
+</head>
+<body>
+
+<header>🌟 Register - Student Best Income 🌟</header>
+
+<form id="registerForm">
+    <input type="text" id="firstName" placeholder="First Name" required><br>
+    <input type="text" id="lastName" placeholder="Last Name" required><br>
+    <input type="email" id="email" placeholder="Email Address" required><br>
+    <input type="text" id="phone" placeholder="Phone Number" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required><br>
+    <button type="submit">SUBMIT</button>
+    <p class="error" id="errorMsg"></p>
+    <p class="success" id="successMsg"></p>
+    <p>Already have an account? <a href="login.html">Login here</a></p>
+</form>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {  
+    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",  
+    authDomain: "studentbestincome.firebaseapp.com",  
+    databaseURL: "https://studentbestincome-default-rtdb.firebaseio.com",  
+    projectId: "studentbestincome",  
+    storageBucket: "studentbestincome.firebasestorage.app",  
+    messagingSenderId: "261636758539",  
+    appId: "1:261636758539:web:faea7afabe319a53117b0e",  
+    measurementId: "G-6L77EJ7MJF"  
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+const registerForm = document.getElementById('registerForm');
+const errorMsg = document.getElementById('errorMsg');
+const successMsg = document.getElementById('successMsg');
+
+registerForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    errorMsg.innerText = '';
+    successMsg.innerText = '';
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if(!firstName || !lastName || !email || !phone || !password || !confirmPassword){
+        errorMsg.innerText = 'All fields are required!';
+        return;
+    }
+
+    if(password !== confirmPassword){
+        errorMsg.innerText = 'Passwords do not match!';
+        return;
+    }
+
+    // Firebase Auth create user
+    auth.createUserWithEmailAndPassword(email, password)
+    .then(userCredential=>{
+        const user = userCredential.user;
+        // Save extra info in Realtime Database
+        db.ref('users/' + user.uid).set({
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: phone,
+            isVerified: false,
+            balance: 0
+        }).then(()=>{
+            successMsg.innerText = 'Registration successful! Redirecting to login...';
+            setTimeout(()=>{ window.location.href='login.html'; }, 2000);
+        });
+    })
+    .catch(error=>{
+        errorMsg.innerText = error.message;
+    });
+});
+</script>
+
+</body>
+</html>
