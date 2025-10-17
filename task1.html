@@ -1,35 +1,72 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Task 1 - Student Best Income</title>
 <style>
-body { font-family: Arial, sans-serif; background:#f0f9ff; text-align:center; padding:20px; }
-h1 { color: #3b82f6; }
-input, button { padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:16px; width:90%; max-width:300px; }
-button { background:#10b981; color:white; border:none; cursor:pointer; transition:0.3s; }
-button:hover { background:#059669; }
-.success { color:green; font-weight:bold; }
-.error { color:red; font-weight:bold; }
+  body { font-family: Arial, sans-serif; background:#f0f9ff; text-align:center; padding:20px; margin:0; }
+  header { background:#3b82f6; color:#fff; padding:12px; font-size:20px; font-weight:700; }
+  .banner { background:#fde68a; color:#92400e; padding:12px; border-radius:8px; margin:18px auto; width:95%; max-width:720px; text-align:left; }
+  .banner .actions { float:right; }
+  .btn { display:inline-block; padding:8px 12px; margin-left:8px; border:none; border-radius:6px; cursor:pointer; font-weight:700; }
+  .btn-open { background:#2563eb; color:#fff; }
+  .btn-copy { background:#10b981; color:#fff; }
+  .container { background:#e0f2fe; padding:18px; margin:16px auto; border-radius:10px; width:95%; max-width:720px; box-sizing:border-box; }
+  label { display:block; text-align:left; margin:10px 0 6px; font-weight:600; }
+  input[type="file"] { width:100%; }
+  input[type="text"], input[type="email"] { width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; box-sizing:border-box; }
+  .note { font-size:14px; color:#065f46; margin:8px 0 14px; }
+  .payline { font-weight:700; margin:8px 0; }
+  .submit-btn { background:#10b981; color:#fff; padding:12px 18px; margin-top:12px; border:none; border-radius:8px; font-weight:800; cursor:pointer; }
+  .submit-btn[disabled] { opacity:0.6; cursor:not-allowed; }
+  .success { color:green; font-weight:700; margin-top:10px; }
+  .error { color:red; font-weight:700; margin-top:10px; }
+  .status-badge { display:inline-block; padding:6px 10px; border-radius:8px; font-weight:700; }
+  .status-pending { background:#f59e0b; color:#fff; }
+  .status-approved { background:#10b981; color:#fff; }
+  .clearfix::after { content:""; display:block; clear:both; }
+  @media(max-width:480px){ .banner .actions{ float:none; margin-top:10px; } }
 </style>
 </head>
 <body>
 
-<h1>➡️ Task 1</h1>
-<p>টাস্ক সম্পন্ন করার পরে নিচে স্ক্রিনশট আপলোড করুন এবং আপনার নাম্বার/ইমেইল দিন 👇</p>
+<header>🌟 Task 1 — Registration Job 🌟</header>
 
-<p>Before Task Screenshot:</p>
-<input type="file" id="beforeScreenshot" accept="image/*"><br>
+<div class="banner clearfix" id="jobBanner">
+  <strong>রেজিস্ট্রেশন জব</strong>
+  <div class="actions">
+    <button class="btn btn-open" id="openLink">Open</button>
+    <button class="btn btn-copy" id="copyLink">Copy</button>
+  </div>
+  <div style="clear:both"></div>
+</div>
 
-<p>After Task Screenshot:</p>
-<input type="file" id="afterScreenshot" accept="image/*"><br>
+<div class="container" id="taskContainer">
+  <h2>➡️ Task 1</h2>
+  <p>টাস্ক সম্পন্ন করার পরে স্ক্রিনশট আপলোড করুন এবং নিচে আপনার নাম্বার/ইমেইল দিন — তারপর SUBMIT করুন।</p>
 
-<input type="text" id="contactInfo" placeholder="Your number or email"><br>
+  <p class="note">অনুগ্রহ করে রেজিস্ট্রেশন করার আগে এবং পরে আলাদা আলাদা স্ক্রিনশট নিন। (Before, After)</p>
 
-<button id="submitTask">SUBMIT</button>
-<p class="success" id="successMsg"></p>
-<p class="error" id="errorMsg"></p>
+  <label for="beforeScreenshot">Before Registration Screenshot</label>
+  <input type="file" id="beforeScreenshot" accept="image/*">
+
+  <label for="afterScreenshot">After Registration Screenshot</label>
+  <input type="file" id="afterScreenshot" accept="image/*">
+
+  <label for="contactInfo">Your number or email</label>
+  <input type="text" id="contactInfo" placeholder="017xxxxxxxx or your@email.com">
+
+  <div class="payline">Reward: <strong>5 Tk</strong></div>
+
+  <button id="submitTask" class="submit-btn">SUBMIT</button>
+
+  <div id="messages">
+    <p class="success" id="successMsg" style="display:none"></p>
+    <p class="error" id="errorMsg" style="display:none"></p>
+    <p id="statusText" style="margin-top:10px;"></p>
+  </div>
+</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -38,94 +75,189 @@ button:hover { background:#059669; }
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
 <script>
-const firebaseConfig = {  
-    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",  
-    authDomain: "studentbestincome.firebaseapp.com",  
-    databaseURL: "https://studentbestincome-default-rtdb.firebaseio.com",  
-    projectId: "studentbestincome",  
-    storageBucket: "studentbestincome.firebasestorage.app",  
-    messagingSenderId: "261636758539",  
-    appId: "1:261636758539:web:faea7afabe319a53117b0e",  
-    measurementId: "G-6L77EJ7MJF"  
+/* ---------- CONFIG ---------- */
+const registrationURL = "https://otieu.com/4/10007498"; // <<== তোমার দেওয়া লিংক
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",
+  authDomain: "studentbestincome.firebaseapp.com",
+  databaseURL: "https://studentbestincome-default-rtdb.firebaseio.com",
+  projectId: "studentbestincome",
+  storageBucket: "studentbestincome.firebasestorage.app",
+  messagingSenderId: "261636758539",
+  appId: "1:261636758539:web:faea7afabe319a53117b0e",
+  measurementId: "G-6L77EJ7MJF"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 const storage = firebase.storage();
 
+/* ---------- UI elems ---------- */
+const openLinkBtn = document.getElementById('openLink');
+const copyLinkBtn = document.getElementById('copyLink');
+const beforeInput = document.getElementById('beforeScreenshot');
+const afterInput = document.getElementById('afterScreenshot');
+const contactInput = document.getElementById('contactInfo');
 const submitBtn = document.getElementById('submitTask');
 const successMsg = document.getElementById('successMsg');
 const errorMsg = document.getElementById('errorMsg');
+const statusText = document.getElementById('statusText');
 
-auth.onAuthStateChanged(user=>{
-    if(!user){
-        errorMsg.innerText = "প্রথমে লগইন করুন!";
-        submitBtn.disabled = true;
-        return;
-    }
-
-    // Check if already submitted
-    db.ref('users/' + user.uid + '/tasks/task1').once('value').then(snap=>{
-        const status = snap.val();
-        if(status === 'pending' || status === 'approved'){
-            submitBtn.disabled = true;
-            successMsg.innerText = "আপনি ইতিমধ্যে এই টাস্ক সাবমিট করেছেন। Status: " + status;
-        }
-    });
+/* ---------- Banner actions ---------- */
+openLinkBtn.addEventListener('click', ()=> {
+  window.open(registrationURL, "_blank");
+});
+copyLinkBtn.addEventListener('click', async ()=> {
+  try {
+    await navigator.clipboard.writeText(registrationURL);
+    alert('Link copied to clipboard!');
+  } catch(e) {
+    // fallback
+    prompt("Copy this link:", registrationURL);
+  }
 });
 
-submitBtn.addEventListener('click', async ()=>{
-    successMsg.innerText = '';
-    errorMsg.innerText = '';
+/* ---------- Helpers ---------- */
+function showSuccess(text){
+  successMsg.style.display = 'block';
+  successMsg.innerText = text;
+  errorMsg.style.display = 'none';
+}
+function showError(text){
+  errorMsg.style.display = 'block';
+  errorMsg.innerText = text;
+  successMsg.style.display = 'none';
+}
+function setPendingUI(){
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Pending Review ⏳";
+  statusText.innerHTML = '<span class="status-badge status-pending">Pending Review ⏳</span>';
+}
+function setApprovedUI(){
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Approved ✅";
+  statusText.innerHTML = '<span class="status-badge status-approved">Approved ✅</span>';
+}
 
-    const beforeFile = document.getElementById('beforeScreenshot').files[0];
-    const afterFile = document.getElementById('afterScreenshot').files[0];
-    const contact = document.getElementById('contactInfo').value.trim();
+/* ---------- Auth & initial check ---------- */
+let currentUser = null;
+auth.onAuthStateChanged(user => {
+  currentUser = user;
+  // reset messages
+  successMsg.style.display = 'none';
+  errorMsg.style.display = 'none';
+  statusText.innerHTML = '';
 
-    const user = auth.currentUser;
-    if(!user){
-        errorMsg.innerText = "প্রথমে লগইন করুন!";
-        return;
+  if(!user){
+    showError('প্রথমে লগইন করুন!');
+    submitBtn.disabled = true;
+    return;
+  }
+
+  // check user's task1 status
+  db.ref('users/' + user.uid + '/tasks/task1').once('value').then(snap=>{
+    const val = snap.val();
+    if(val === 'pending'){
+      setPendingUI();
+      showSuccess('আপনি ইতিমধ্যে এই টাস্ক সাবমিট করেছেন।');
+    } else if(val === 'approved'){
+      setApprovedUI();
+      showSuccess('আপনি ইতিমধ্যে এই টাস্ক সম্পন্ন করেছেন এবং পুরস্কার পেয়েছেন।');
+    } else {
+      // allow submission
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'SUBMIT';
     }
+  }).catch(err=>{
+    console.error(err);
+  });
+});
 
-    if(!beforeFile || !afterFile || !contact){
-        errorMsg.innerText = "সব ফিল্ড পূরণ করুন!";
-        return;
+/* ---------- Submit handler ---------- */
+submitBtn.addEventListener('click', async () => {
+  // clear messages
+  successMsg.style.display = 'none';
+  errorMsg.style.display = 'none';
+  statusText.innerHTML = '';
+
+  if(!currentUser){
+    showError('প্রথমে লগইন করুন!');
+    return;
+  }
+
+  const beforeFile = beforeInput.files[0];
+  const afterFile = afterInput.files[0];
+  const contact = contactInput.value.trim();
+
+  if(!beforeFile || !afterFile || !contact){
+    showError('সব ফিল্ড পূরণ করুন!');
+    return;
+  }
+
+  // Final check: prevent duplicate submission (race condition)
+  const taskStatusSnap = await db.ref('users/' + currentUser.uid + '/tasks/task1').once('value');
+  const existingStatus = taskStatusSnap.val();
+  if(existingStatus === 'pending' || existingStatus === 'approved'){
+    if(existingStatus === 'pending'){
+      setPendingUI();
+      showSuccess('আপনি ইতিমধ্যে এই টাস্ক সাবমিট করেছেন।');
+    } else {
+      setApprovedUI();
+      showSuccess('আপনি ইতিমধ্যে এই টাস্ক সম্পন্ন করেছেন।');
     }
+    return;
+  }
 
-    try {
-        // Upload screenshots
-        const beforeRef = storage.ref('tasks/' + user.uid + '/task1_before_' + Date.now());
-        const afterRef = storage.ref('tasks/' + user.uid + '/task1_after_' + Date.now());
+  submitBtn.disabled = true;
+  submitBtn.innerText = 'Uploading...';
 
-        const beforeSnap = await beforeRef.put(beforeFile);
-        const afterSnap = await afterRef.put(afterFile);
+  try {
+    // upload files
+    const timestamp = Date.now();
+    const beforeRef = storage.ref('tasks/' + currentUser.uid + '/task1_before_' + timestamp);
+    const afterRef = storage.ref('tasks/' + currentUser.uid + '/task1_after_' + timestamp);
 
-        const beforeURL = await beforeSnap.ref.getDownloadURL();
-        const afterURL = await afterSnap.ref.getDownloadURL();
+    const beforeSnap = await beforeRef.put(beforeFile);
+    const afterSnap = await afterRef.put(afterFile);
 
-        // Save submission
-        const submissionKey = db.ref('taskSubmissions').push().key;
-        await db.ref('taskSubmissions/' + submissionKey).set({
-            uid: user.uid,
-            taskId: 'task1',
-            beforeScreenshot: beforeURL,
-            afterScreenshot: afterURL,
-            contact: contact,
-            status: 'pending',
-            reward: 5,
-            submittedAt: Date.now()
-        });
+    const beforeURL = await beforeSnap.ref.getDownloadURL();
+    const afterURL = await afterSnap.ref.getDownloadURL();
 
-        // Update user task status
-        await db.ref('users/' + user.uid + '/tasks/task1').set('pending');
+    // create submission
+    const submissionKey = db.ref('taskSubmissions').push().key;
+    const submissionData = {
+      uid: currentUser.uid,
+      taskId: 'task1',
+      beforeScreenshot: beforeURL,
+      afterScreenshot: afterURL,
+      contact: contact,
+      status: 'pending',
+      reward: 5,
+      submittedAt: Date.now()
+    };
 
-        successMsg.innerText = "✅ Task submitted! Waiting for admin approval.";
-        submitBtn.disabled = true;
+    const updates = {};
+    updates['/taskSubmissions/' + submissionKey] = submissionData;
+    updates['/users/' + currentUser.uid + '/tasks/task1'] = 'pending';
+    // Optionally keep a reference for user's submissions
+    updates['/users/' + currentUser.uid + '/submissions/' + submissionKey] = {
+      taskId: 'task1',
+      status: 'pending',
+      submittedAt: Date.now()
+    };
 
-    } catch(err){
-        errorMsg.innerText = "❌ Error: " + err.message;
-    }
+    await db.ref().update(updates);
+
+    showSuccess('✅ Submitted! Waiting for admin approval.');
+    setPendingUI();
+
+  } catch (err) {
+    console.error(err);
+    showError('❌ Error: ' + err.message);
+    submitBtn.disabled = false;
+    submitBtn.innerText = 'SUBMIT';
+  }
 });
 </script>
 
