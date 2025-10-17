@@ -5,47 +5,128 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Task 1 - Student Best Income</title>
 <style>
-body { font-family: Arial, sans-serif; background:#f3f4f6; margin:0; padding:20px; }
-h1 { color:#3b82f6; text-align:center; }
-.task-container { max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-.task-link { margin:10px 0; display:flex; justify-content:space-between; align-items:center; }
-button { padding:10px 15px; margin-left:5px; cursor:pointer; border:none; border-radius:5px; color:white; }
-.copy-btn { background:#10b981; }
-.open-btn { background:#3b82f6; }
-.screenshot { display:flex; justify-content:space-between; margin:15px 0; }
-.screenshot div { width:48%; height:120px; border:2px dashed #d1d5db; display:flex; align-items:center; justify-content:center; color:#6b7280; font-size:14px; }
-input[type=text] { width:100%; padding:10px; margin:10px 0; border:1px solid #d1d5db; border-radius:5px; }
-.confirm-btn { width:100%; background:#ef4444; color:white; padding:12px; font-size:16px; border:none; border-radius:8px; cursor:pointer; }
+body { font-family: Arial, sans-serif; background:#f0f9ff; text-align:center; padding:20px; }
+h1 { color: #3b82f6; }
+input, button { padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:16px; width:90%; max-width:300px; }
+button { background:#10b981; color:white; border:none; cursor:pointer; transition:0.3s; }
+button:hover { background:#059669; }
+.success { color:green; font-weight:bold; }
+.error { color:red; font-weight:bold; }
 </style>
 </head>
 <body>
 
-<h1>➡️ Task 1 (5৳)</h1>
+<h1>➡️ Task 1</h1>
+<p>টাস্ক সম্পন্ন করার পরে নিচে স্ক্রিনশট আপলোড করুন এবং আপনার নাম্বার/ইমেইল দিন 👇</p>
 
-<div class="task-container">
-  <div class="task-link">
-    <span>রেজিস্ট্রেশন লিংক:</span>
-    <div>
-      <button class="copy-btn" onclick="copyLink('https://otieu.com/4/10049311')">Copy</button>
-      <button class="open-btn" onclick="window.open('https://otieu.com/4/10049311','_blank')">Open</button>
-    </div>
-  </div>
+<p>Before Task Screenshot:</p>
+<input type="file" id="beforeScreenshot" accept="image/*"><br>
 
-  <div class="screenshot">
-    <div>রেজিস্ট্রেশনের আগে</div>
-    <div>রেজিস্ট্রেশনের পরে</div>
-  </div>
+<p>After Task Screenshot:</p>
+<input type="file" id="afterScreenshot" accept="image/*"><br>
 
-  <input type="text" placeholder="এখানে আপনার নাম্বার বা জিমেইল লিখুন">
+<input type="text" id="contactInfo" placeholder="Your number or email"><br>
 
-  <button class="confirm-btn">Confirm & Submit</button>
-</div>
+<button id="submitTask">SUBMIT</button>
+<p class="success" id="successMsg"></p>
+<p class="error" id="errorMsg"></p>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
 <script>
-function copyLink(link) {
-  navigator.clipboard.writeText(link);
-  alert('Link copied to clipboard!');
-}
+const firebaseConfig = {  
+    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",  
+    authDomain: "studentbestincome.firebaseapp.com",  
+    databaseURL: "https://studentbestincome-default-rtdb.firebaseio.com",  
+    projectId: "studentbestincome",  
+    storageBucket: "studentbestincome.firebasestorage.app",  
+    messagingSenderId: "261636758539",  
+    appId: "1:261636758539:web:faea7afabe319a53117b0e",  
+    measurementId: "G-6L77EJ7MJF"  
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const storage = firebase.storage();
+
+const submitBtn = document.getElementById('submitTask');
+const successMsg = document.getElementById('successMsg');
+const errorMsg = document.getElementById('errorMsg');
+
+auth.onAuthStateChanged(user=>{
+    if(!user){
+        errorMsg.innerText = "প্রথমে লগইন করুন!";
+        submitBtn.disabled = true;
+        return;
+    }
+
+    // Check if already submitted
+    db.ref('users/' + user.uid + '/tasks/task1').once('value').then(snap=>{
+        const status = snap.val();
+        if(status === 'pending' || status === 'approved'){
+            submitBtn.disabled = true;
+            successMsg.innerText = "আপনি ইতিমধ্যে এই টাস্ক সাবমিট করেছেন। Status: " + status;
+        }
+    });
+});
+
+submitBtn.addEventListener('click', async ()=>{
+    successMsg.innerText = '';
+    errorMsg.innerText = '';
+
+    const beforeFile = document.getElementById('beforeScreenshot').files[0];
+    const afterFile = document.getElementById('afterScreenshot').files[0];
+    const contact = document.getElementById('contactInfo').value.trim();
+
+    const user = auth.currentUser;
+    if(!user){
+        errorMsg.innerText = "প্রথমে লগইন করুন!";
+        return;
+    }
+
+    if(!beforeFile || !afterFile || !contact){
+        errorMsg.innerText = "সব ফিল্ড পূরণ করুন!";
+        return;
+    }
+
+    try {
+        // Upload screenshots
+        const beforeRef = storage.ref('tasks/' + user.uid + '/task1_before_' + Date.now());
+        const afterRef = storage.ref('tasks/' + user.uid + '/task1_after_' + Date.now());
+
+        const beforeSnap = await beforeRef.put(beforeFile);
+        const afterSnap = await afterRef.put(afterFile);
+
+        const beforeURL = await beforeSnap.ref.getDownloadURL();
+        const afterURL = await afterSnap.ref.getDownloadURL();
+
+        // Save submission
+        const submissionKey = db.ref('taskSubmissions').push().key;
+        await db.ref('taskSubmissions/' + submissionKey).set({
+            uid: user.uid,
+            taskId: 'task1',
+            beforeScreenshot: beforeURL,
+            afterScreenshot: afterURL,
+            contact: contact,
+            status: 'pending',
+            reward: 5,
+            submittedAt: Date.now()
+        });
+
+        // Update user task status
+        await db.ref('users/' + user.uid + '/tasks/task1').set('pending');
+
+        successMsg.innerText = "✅ Task submitted! Waiting for admin approval.";
+        submitBtn.disabled = true;
+
+    } catch(err){
+        errorMsg.innerText = "❌ Error: " + err.message;
+    }
+});
 </script>
 
 </body>
