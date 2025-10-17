@@ -1,85 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verify Account - Student Best Income</title>
-  <script type="module">
-    // Firebase import
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",
-      authDomain: "studentbestincome.firebaseapp.com",
-      projectId: "studentbestincome",
-      storageBucket: "studentbestincome.firebasestorage.app",
-      messagingSenderId: "261636758539",
-      appId: "1:261636758539:web:faea7afabe319a53117b0e",
-      measurementId: "G-6L77EJ7MJF"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const verifyBanner = document.getElementById("verify-banner");
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          if (user.emailVerified) {
-            verifyBanner.style.display = "none";
-          } else {
-            verifyBanner.style.display = "block";
-          }
-        } else {
-          verifyBanner.style.display = "none";
-        }
-      });
-
-      document.getElementById("verify-btn").addEventListener("click", () => {
-        // Send verification email
-        const user = auth.currentUser;
-        if (user) {
-          user.sendEmailVerification().then(() => {
-            alert("Verification email sent! Check your inbox.");
-          });
-        }
-      });
-    });
-  </script>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f0f4f8; text-align:center; padding: 40px;}
-    h1 { color: #3b82f6; }
-    #verify-banner { 
-      background: #fef3c7; 
-      border: 1px solid #fcd34d; 
-      padding: 20px; 
-      margin: 20px auto; 
-      width: 90%; 
-      border-radius: 10px;
-      font-size: 18px;
-      color: #b45309;
-    }
-    #verify-btn {
-      margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #verify-btn:hover {
-      background: #2563eb;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Account - Student Best Income</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f0f4f8; text-align:center; margin:0; }
+header { background:#3b82f6; color:white; padding:15px; font-size:24px; font-weight:bold; }
+.container { background:#e0f2fe; padding:20px; margin:20px auto; border-radius:10px; width:90%; max-width:450px; }
+input, select { width:90%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; font-size:16px; }
+button { padding:10px 20px; border:none; border-radius:5px; background:#10b981; color:white; font-size:16px; font-weight:bold; cursor:pointer; transition:0.3s; }
+button:hover { background:#059669; }
+p { margin-top:15px; }
+.success { color:green; font-weight:bold; }
+.error { color:red; font-weight:bold; }
+.copyBtn { background:#3b82f6; margin-left:10px; }
+</style>
 </head>
 <body>
-  <h1>🔒 Account Verification</h1>
-  <div id="verify-banner">
-    Your account is not verified. <br>
-    <button id="verify-btn">→ VERIFY NOW ←</button>
-  </div>
+
+<header>🌟 Verify Account 🌟</header>
+
+<div class="container" id="verifyContainer">
+    <p id="message">Loading...</p>
+    
+    <div id="payForm" style="display:none;">
+        <h3>Pay Cash Form</h3>
+        <p>অনুগ্রহ করে একই পরিমাণ স্থানান্তর করুন এবং ব্যর্থ এড়াতে সঠিক TxnID পূরণ করুন।<br>
+        এই বিকাশ পার্সোনাল অ্যাকাউন্টে অর্থ প্রদান করতে Send Money ব্যবহার করুন।</p>
+        
+        <p>
+            Personal: <span id="personalNumber">01338553254</span>
+            <button class="copyBtn" onclick="copyNumber()">Copy</button>
+        </p>
+        
+        <p>
+            Method: 
+            <select id="payMethod">
+                <option value="bkash">Bkash</option>
+                <option value="nagad">Nagad</option>
+            </select>
+        </p>
+        
+        <p>Pay: 20 Tk</p>
+        
+        <input type="text" id="userNumber" placeholder="Your number" required><br>
+        <input type="text" id="txnId" placeholder="Txn ID" required><br>
+        <button id="verifyBtn">VERIFY</button>
+        <p class="success" id="successMsg"></p>
+        <p class="error" id="errorMsg"></p>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {  
+    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",  
+    authDomain: "studentbestincome.firebaseapp.com",  
+    databaseURL: "https://studentbestincome-default-rtdb.firebaseio.com",  
+    projectId: "studentbestincome",  
+    storageBucket: "studentbestincome.firebasestorage.app",  
+    messagingSenderId: "261636758539",  
+    appId: "1:261636758539:web:faea7afabe319a53117b0e",  
+    measurementId: "G-6L77EJ7MJF"  
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+const message = document.getElementById('message');
+const payForm = document.getElementById('payForm');
+const verifyBtn = document.getElementById('verifyBtn');
+const successMsg = document.getElementById('successMsg');
+const errorMsg = document.getElementById('errorMsg');
+
+function copyNumber(){
+    const personal = document.getElementById('personalNumber').innerText;
+    navigator.clipboard.writeText(personal).then(()=>{ alert('Copied: '+personal); });
+}
+
+auth.onAuthStateChanged(user=>{
+    if(user){
+        db.ref('users/' + user.uid).once('value').then(snapshot=>{
+            const data = snapshot.val();
+            if(data && data.isVerified){
+                message.innerText = '✅ Your account is already verified!';
+            } else {
+                message.innerText = '';
+                payForm.style.display = 'block';
+            }
+        });
+    } else {
+        message.innerText = '⚠️ Please login first to verify your account.';
+    }
+});
+
+verifyBtn.addEventListener('click', ()=>{
+    errorMsg.innerText = '';
+    successMsg.innerText = '';
+    
+    const userNumber = document.getElementById('userNumber').value.trim();
+    const txnId = document.getElementById('txnId').value.trim();
+    const payMethod = document.getElementById('payMethod').value;
+    
+    if(!userNumber || !txnId){
+        errorMsg.innerText = 'Please fill all fields!';
+        return;
+    }
+    
+    const user = auth.currentUser;
+    if(user){
+        const txnKey = db.ref('users/' + user.uid + '/payment').push().key;
+        db.ref('users/' + user.uid + '/payment/' + txnKey).set({
+            amount: 20,
+            userNumber: userNumber,
+            txnId: txnId,
+            method: payMethod,
+            status: 'pending'
+        }).then(()=>{
+            successMsg.innerText = '✅ Payment details submitted. Waiting for verification.';
+            verifyBtn.disabled = true;
+        }).catch(err=>{
+            errorMsg.innerText = '❌ Error: '+err.message;
+        });
+    }
+});
+</script>
+
 </body>
 </html>
