@@ -5,18 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tasks - Student Best Income</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f0f9ff;
-    text-align: center;
-    padding: 20px;
-  }
-  h1 {
-    color: #3b82f6;
-  }
-  .task-button {
+body { font-family: Arial, sans-serif; background:#f0f9ff; text-align:center; padding:20px; }
+h1 { color: #3b82f6; }
+.task-button {
     display: block;
-    background: #10b981;
     color: white;
     padding: 12px;
     margin: 10px auto;
@@ -26,28 +18,80 @@
     text-decoration: none;
     font-weight: bold;
     transition: 0.3s;
-  }
-  .task-button:hover {
-    background: #059669;
-  }
+}
+.task-button.new { background:#3b82f6; }      /* Blue: new task */
+.task-button.pending { background:#f59e0b; }  /* Orange: pending */
+.task-button.approved { background:#10b981; } /* Green: approved */
+.task-button:hover { opacity:0.8; }
+.message { font-weight:bold; color:red; margin:15px; }
 </style>
 </head>
 <body>
 
 <h1>✅ Tasks</h1>
 <p>টাস্কে ক্লিক করে কাজ শুরু করুন 👇</p>
+<p class="message" id="msg"></p>
 
-<!-- 10 Task Buttons -->
-<a href="task1.html" class="task-button">➡️ Task 1 - রেজিস্ট্রেশন জব ✅</a>
-<a href="task2.html" class="task-button">➡️ Task 2 - রেজিস্ট্রেশন জব ✅</a>
-<a href="task3.html" class="task-button">➡️ Task 3 - রেজিস্ট্রেশন জব ✅</a>
-<a href="task4.html" class="task-button">➡️ Task 4 - রেজিস্ট্রেশন জব ✅</a>
-<a href="task5.html" class="task-button">➡️ Task 5 - রেজিস্ট্রেশন জব ✅</a>
-<a href="task6.html" class="task-button">➡️ Task 6 - রেজিস্ট্রেশন জব ✅</a>
-<a href="task7.html" class="task-button">➡️ Task 7 - রেজিস্ট্রেশন জব ✅</a>
-<a href="task8.html" class="task-button">➡️ Task 8 - রেজিস্ট্রেশন জব ✅</a>
-<a href="task9.html" class="task-button">➡️ Task 9 - রেজিস্ট্রেশন জব ✅</a>
-<a href="task10.html" class="task-button">➡️ Task 10 - রেজিস্ট্রেশন জব ✅</a>
+<div id="tasksContainer">
+  <!-- 10 Task buttons -->
+  <a href="task1.html" class="task-button new" id="task1">➡️ Task 1</a>
+  <a href="task2.html" class="task-button new" id="task2">➡️ Task 2</a>
+  <a href="task3.html" class="task-button new" id="task3">➡️ Task 3</a>
+  <a href="task4.html" class="task-button new" id="task4">➡️ Task 4</a>
+  <a href="task5.html" class="task-button new" id="task5">➡️ Task 5</a>
+  <a href="task6.html" class="task-button new" id="task6">➡️ Task 6</a>
+  <a href="task7.html" class="task-button new" id="task7">➡️ Task 7</a>
+  <a href="task8.html" class="task-button new" id="task8">➡️ Task 8</a>
+  <a href="task9.html" class="task-button new" id="task9">➡️ Task 9</a>
+  <a href="task10.html" class="task-button new" id="task10">➡️ Task 10</a>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {  
+    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",  
+    authDomain: "studentbestincome.firebaseapp.com",  
+    databaseURL: "https://studentbestincome-default-rtdb.firebaseio.com",  
+    projectId: "studentbestincome",  
+    storageBucket: "studentbestincome.firebasestorage.app",  
+    messagingSenderId: "261636758539",  
+    appId: "1:261636758539:web:faea7afabe319a53117b0e",  
+    measurementId: "G-6L77EJ7MJF"  
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+const msg = document.getElementById('msg');
+const taskButtons = [];
+for(let i=1;i<=10;i++){
+    taskButtons[i] = document.getElementById('task'+i);
+}
+
+auth.onAuthStateChanged(user=>{
+    if(!user){
+        msg.innerText = "⚠️ Please login first to view tasks!";
+        // disable buttons
+        for(let i=1;i<=10;i++) taskButtons[i].style.pointerEvents = 'none';
+        return;
+    }
+    msg.innerText = "";
+
+    // Fetch user task status
+    db.ref('users/' + user.uid + '/tasks').once('value').then(snapshot=>{
+        const tasks = snapshot.val() || {};
+        for(let i=1;i<=10;i++){
+            const btn = taskButtons[i];
+            const status = tasks['task'+i] || 'new';
+            btn.className = 'task-button ' + status;
+        }
+    });
+});
+</script>
 
 </body>
 </html>
