@@ -5,161 +5,119 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Verify Account - Student Best Income</title>
 <style>
-body { font-family: Arial, sans-serif; background: #f0f9ff; padding: 20px; }
-header { background: #3b82f6; color: white; padding: 15px; text-align:center; font-size:1.3em; }
-.container { background: #e0f2fe; padding: 20px; border-radius: 10px; max-width: 500px; margin: 20px auto; }
-input, select { width: 90%; padding: 10px; margin: 10px 0; font-size:1em; }
-button { padding: 10px 20px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
-button:hover { opacity:0.9; }
-.copyBtn { background:#3b82f6; color:white; margin-left:10px; }
-#verifyBtn { background:#10b981; color:white; }
-.success { color:green; font-weight:bold; margin-top:10px; }
-.error { color:red; font-weight:bold; margin-top:10px; }
-.pending { color:orange; font-weight:bold; margin-top:10px; }
+body { font-family: Arial; background:#f0f9ff; padding:20px; text-align:center;}
+.container { background:#e0f2fe; padding:20px; border-radius:10px; display:inline-block;}
+input, button { padding:10px; margin:5px; width:90%; max-width:300px;}
+button { cursor:pointer; }
+.success { color:green; font-weight:bold; }
+.error { color:red; font-weight:bold; }
 </style>
 </head>
 <body>
 
-<header>🌟 Verify Account 🌟</header>
+<h2>🌟 Verify Account 🌟</h2>
+<div class="container">
+  <p id="statusMessage">Loading...</p>
 
-<div class="container" id="verifyContainer">
-    <p id="message">Loading...</p>
-
-    <div id="payForm" style="display:none;">
-        <h3>Pay Cash Form</h3>
-        <p>অনুগ্রহ করে একই পরিমাণ স্থানান্তর করুন এবং ব্যর্থ এড়াতে সঠিক TxnID পূরণ করুন।</p>
-        <p>এই বিকাশ পার্সোনাল অ্যাকাউন্টে অর্থ প্রদান করতে Send Money ব্যবহার করুন।</p>
-
-        <p>
-            Personal: <span id="personalNumber">01338553254</span>
-            <button class="copyBtn" onclick="copyNumber()">Copy</button>
-        </p>
-
-        <p>
-            Method:
-            <select id="payMethod">
-                <option value="bkash">Bkash</option>
-                <option value="nagad">Nagad</option>
-            </select>
-        </p>
-
-        <p>Pay: 20 Tk</p>
-
-        <input type="text" id="userNumber" placeholder="Your number (sender)">
-        <input type="text" id="txnId" placeholder="Transaction ID">
-        <button id="verifyBtn">VERIFY</button>
-
-        <p class="success" id="successMsg"></p>
-        <p class="error" id="errorMsg"></p>
-        <p class="pending" id="pendingMsg"></p>
-    </div>
+  <div id="verifyForm" style="display:none;">
+    <input type="file" id="screenshot" accept="image/*"><br>
+    <input type="text" id="userNumber" placeholder="Your number or email"><br>
+    <input type="text" id="txnId" placeholder="Transaction ID"><br>
+    <button id="submitVerify">SUBMIT</button>
+    <p class="success" id="successMsg"></p>
+    <p class="error" id="errorMsg"></p>
+  </div>
 </div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
 <script>
-// Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",
-    authDomain: "studentbestincome.firebaseapp.com",
-    databaseURL: "https://studentbestincome-default-rtdb.firebaseio.com",
-    projectId: "studentbestincome",
-    storageBucket: "studentbestincome.firebasestorage.app",
-    messagingSenderId: "261636758539",
-    appId: "1:261636758539:web:faea7afabe319a53117b0e",
-    measurementId: "G-6L77EJ7MJF"
+  apiKey: "AIzaSyBEbzvJ5asGNPp85_Uyvk1N_TCjIBfECXY",
+  authDomain: "studentbestincome.firebaseapp.com",
+  databaseURL: "https://studentbestincome-default-rtdb.firebaseio.com",
+  projectId: "studentbestincome",
+  storageBucket: "studentbestincome.firebasestorage.app",
+  messagingSenderId: "261636758539",
+  appId: "1:261636758539:web:faea7afabe319a53117b0e",
+  measurementId: "G-6L77EJ7MJF"
 };
-
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
+const storage = firebase.storage();
 
-// DOM elements
-const message = document.getElementById('message');
-const payForm = document.getElementById('payForm');
-const verifyBtn = document.getElementById('verifyBtn');
+// DOM Elements
+const statusMessage = document.getElementById('statusMessage');
+const verifyForm = document.getElementById('verifyForm');
+const submitBtn = document.getElementById('submitVerify');
+const screenshotInput = document.getElementById('screenshot');
+const userNumberInput = document.getElementById('userNumber');
+const txnIdInput = document.getElementById('txnId');
 const successMsg = document.getElementById('successMsg');
 const errorMsg = document.getElementById('errorMsg');
-const pendingMsg = document.getElementById('pendingMsg');
 
-// Copy personal number
-function copyNumber(){
-    const personal = document.getElementById('personalNumber').innerText;
-    navigator.clipboard.writeText(personal).then(()=>{
-        alert('Copied: ' + personal);
-    });
-}
+auth.onAuthStateChanged(user => {
+  if(!user){
+    statusMessage.innerText = '⚠️ Please login first';
+    verifyForm.style.display = 'none';
+    return;
+  }
 
-// Check auth state
-auth.onAuthStateChanged(user=>{
-    if(user){
-        db.ref('users/' + user.uid).once('value').then(snapshot=>{
-            const data = snapshot.val();
-            if(data && data.isVerified){
-                message.innerText = '✅ Your account is already verified!';
-            } else if(data && data.payment && Object.values(data.payment).some(p=>p.status==='pending')) {
-                payForm.style.display = 'block';
-                pendingMsg.innerText = '⏳ Payment pending verification';
-                verifyBtn.disabled = true;
-            } else {
-                message.innerText = '';
-                payForm.style.display = 'block';
-            }
-        });
+  // Check if user already submitted
+  db.ref('users/' + user.uid + '/verify_requests').once('value', snapshot => {
+    if(snapshot.exists()){
+      statusMessage.innerText = '⏳ Waiting for verification';
+      verifyForm.style.display = 'none';
     } else {
-        message.innerText = '⚠️ Please login first to verify your account';
+      statusMessage.innerText = '';
+      verifyForm.style.display = 'block';
     }
+  });
 });
 
-// Handle VERIFY click
-verifyBtn.addEventListener('click', ()=>{
-    errorMsg.innerText = '';
-    successMsg.innerText = '';
-    pendingMsg.innerText = '';
+submitBtn.addEventListener('click', ()=>{
+  errorMsg.innerText = '';
+  successMsg.innerText = '';
 
-    const userNumber = document.getElementById('userNumber').value.trim();
-    const txnId = document.getElementById('txnId').value.trim();
-    const payMethod = document.getElementById('payMethod').value;
+  const file = screenshotInput.files[0];
+  const userNumber = userNumberInput.value.trim();
+  const txnId = txnIdInput.value.trim();
 
-    if(!userNumber || !txnId){
-        errorMsg.innerText = '❌ Please fill all fields';
-        return;
-    }
+  if(!file || !userNumber || !txnId){
+    errorMsg.innerText = '❌ Please fill all fields and upload screenshot';
+    return;
+  }
 
-    const user = auth.currentUser;
-    if(user){
-        const paymentData = {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName || 'No Name',
-            amount: 20,
-            userNumber: userNumber,
-            txnId: txnId,
-            method: payMethod,
-            status: 'pending',
-            timestamp: Date.now()
-        };
+  const user = auth.currentUser;
+  const storageRef = storage.ref('verify_screenshots/' + user.uid + '_' + Date.now());
 
-        // Save to user's payment history
-        db.ref('users/' + user.uid + '/payment/' + txnId).set(paymentData)
-        .then(()=>{
-            // Save to admin verifyRequests
-            db.ref('verifyRequests/' + txnId).set(paymentData)
-            .then(()=>{
-                successMsg.innerText = '✅ Payment submitted for verification';
-                pendingMsg.innerText = '⏳ Pending verification';
-                verifyBtn.disabled = true;
-            })
-            .catch(err=>{ console.error('Admin update failed:', err); });
-        })
-        .catch(err=>{
-            errorMsg.innerText = '❌ Error: ' + err.message;
-        });
-    }
+  storageRef.put(file).then(snapshot=>{
+    snapshot.ref.getDownloadURL().then(url=>{
+      const data = {
+        userNumber,
+        txnId,
+        screenshotURL: url,
+        status: 'pending',
+        timestamp: Date.now()
+      };
+
+      // Save under user node
+      db.ref('users/' + user.uid + '/verify_requests').set(data);
+      // Also save under admin node
+      db.ref('admin/verify_requests/' + user.uid).set({...data, userId: user.uid});
+
+      successMsg.innerText = '✅ Verification request submitted';
+      verifyForm.style.display = 'none';
+      statusMessage.innerText = '⏳ Waiting for verification';
+    });
+  }).catch(err=>{
+    errorMsg.innerText = '❌ Error: '+err;
+  });
 });
 </script>
 
